@@ -1,0 +1,10 @@
+copy /include/#? sdk:Include/include_h/ all
+
+IF EXISTS identify.library
+copy identify.library libs:
+avail flush
+else
+echo identify.library not found
+endif
+
+

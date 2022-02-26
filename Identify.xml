@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE library SYSTEM "library.dtd">
+<library name="identify" basename="IdentifyBase" openname="identify.library">
+	<include>exec/types.h</include>
+	<include>libraries/identify.h</include>
+	<interface name="main" version="1.0" struct="IdentifyIFace" prefix="_Identify_" asmprefix="IIdentify" global="IdentifyIFace">
+		<method name="Obtain" result="ULONG"/>
+		<method name="Release" result="ULONG"/>
+		<method name="Expunge" result="void" status="unimplemented"/>
+		<method name="Clone" result="struct Interface *" status="unimplemented"/>
+
+		<method name="IdExpansion" result="LONG">
+			<arg name="Tags" type="struct TagItem *"/>
+		</method>
+
+		<method name="IdHardware" result="STRPTR">
+			<arg name="value" type="ULONG"/>
+			<arg name="Tags" type="struct TagItem *"/>
+		</method>
+
+		<method name="IdAlert" result="LONG">
+			<arg name="value" type="ULONG"/>
+			<arg name="Tags" type="struct TagItem *"/>
+		</method>
+
+		<method name="IdFunction" result="void">
+			<arg name="str" type="STRPTR"/>
+			<arg name="value" type="LONG"/>
+			<arg name="Tags" type="struct TagItem *"/>
+		</method>
+
+		<method name="IdHardwareNum" result="ULONG">
+			<arg name="value" type="ULONG"/>
+			<arg name="Tags" type="struct TagItem *"/>
+		</method>
+
+		<method name="IdHardwareUpdate" result="void">
+		</method>
+
+		<method name="IdFormatString" result="void">
+			<arg name="str1" type="STRPTR"/>
+			<arg name="str2" type="STRPTR"/>
+			<arg name="Tags" type="struct TagItem *"/>
+		</method>
+
+		<method name="IdEstimateFormatSize" result="ULONG">
+			<arg name="str" type="STRPTR"/>
+			<arg name="Tags" type="struct TagItem *"/>
+		</method>
+
+	</interface>
+</library>
+
