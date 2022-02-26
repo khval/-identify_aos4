@@ -11,3 +11,5 @@ I also hope to reuse what ever I can, but put as little as possible into this re
 * Because it’s useful to have common API’s and standards. 
 * Because programs will not work without it.
 * Because having a native version will allow people use it C programs.
+* Becouse the 68K version crashes on AmigaOS4.x
+
