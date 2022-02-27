@@ -79,61 +79,81 @@ STATIC APTR stub_Close_ppc(ULONG *regarray)
 
 STATIC APTR stub_Expunge_ppc(ULONG *regarray)
 {
-	Printf("%s:%s:%ld\n",__FILE__,__FUNCTION__,__LINE__);
-
 	return NULL;
 }
 
 STATIC ULONG stub_Reserved_ppc(ULONG *regarray)
 {
-	Printf("%s:%s:%ld\n",__FILE__,__FUNCTION__,__LINE__);
+	printf("%s:%s:%ld\n",__FILE__,__FUNCTION__,__LINE__);
 	return 0UL;
 }
 
 STATIC ULONG stub_IdExpansion_ppc(ULONG *regarray)
 {
-	Printf("%s:%s:%ld\n",__FILE__,__FUNCTION__,__LINE__);
+	printf("%s:%s:%ld\n",__FILE__,__FUNCTION__,__LINE__);
+	ULONG TagList = (ULONG) regarray[REG68K_A0/4];
+
 	return (ULONG) regarray[REG68K_D0/4];
 }
 
 STATIC STRPTR stub_IdHardware_ppc(ULONG *regarray)
 {
-	Printf("%s:%s:%ld\n",__FILE__,__FUNCTION__,__LINE__);
+	printf("%s:%s:%ld\n",__FILE__,__FUNCTION__,__LINE__);
+	ULONG Type = (ULONG) regarray[REG68K_D0/4];
+	ULONG TagList = (ULONG) regarray[REG68K_A0/4];
+
 	return (STRPTR) regarray[REG68K_D0/4];
 }
 
 STATIC LONG stub_IdAlert_ppc(ULONG *regarray)
 {
-	Printf("%s:%s:%ld\n",__FILE__,__FUNCTION__,__LINE__);
+	printf("%s:%s:%ld\n",__FILE__,__FUNCTION__,__LINE__);
+	ULONG Type = (ULONG) regarray[REG68K_D0/4];
+	ULONG TagList = (ULONG) regarray[REG68K_A0/4];
+
 	return (LONG) regarray[REG68K_D0/4];
 }
 
 STATIC LONG stub_IdFunction_ppc(ULONG *regarray)
 {
-	Printf("%s:%s:%ld\n",__FILE__,__FUNCTION__,__LINE__);
+	printf("%s:%s:%ld\n",__FILE__,__FUNCTION__,__LINE__);
+	STRPTR LibName = (STRPTR) regarray[REG68K_A0/4];
+	ULONG Offset = (ULONG) regarray[REG68K_D0/4];
+	ULONG TagList = (ULONG) regarray[REG68K_A1/4];
+
 	return (LONG) regarray[REG68K_D0/4];
 }
 
 STATIC ULONG stub_IdHardwareNum_ppc(ULONG *regarray)
 {
-	Printf("%s:%s:%ld\n",__FILE__,__FUNCTION__,__LINE__);
+	printf("%s:%s:%ld\n",__FILE__,__FUNCTION__,__LINE__);
+	ULONG Type = (ULONG) regarray[REG68K_D0/4];
+	ULONG TagList = (ULONG) regarray[REG68K_A0/4];
+
 	return (ULONG) regarray[REG68K_D0/4];
 }
 
 STATIC void stub_IdHardwareUpdate_ppc(ULONG *regarray)
 {
-	Printf("%s:%s:%ld\n",__FILE__,__FUNCTION__,__LINE__);
+	printf("%s:%s:%ld\n",__FILE__,__FUNCTION__,__LINE__);
 }
 
 STATIC ULONG stub_IdFormatString_ppc(ULONG *regarray)
 {
-	Printf("%s:%s:%ld\n",__FILE__,__FUNCTION__,__LINE__);
+	printf("%s:%s:%ld\n",__FILE__,__FUNCTION__,__LINE__);
+	STRPTR String = (ULONG) regarray[REG68K_A0/4];
+	ULONG Buffer = (ULONG) regarray[REG68K_A1/4];
+	ULONG Length = (ULONG) regarray[REG68K_D0/4];
+	ULONG Tags = (ULONG) regarray[REG68K_A2/4];
+
 	return (ULONG) regarray[REG68K_D0/4];
 }
 
 STATIC ULONG stub_IdEstimateFormatSize_ppc(ULONG *regarray)
 {
-	Printf("%s:%s:%ld\n",__FILE__,__FUNCTION__,__LINE__);
+	printf("%s:%s:%ld\n",__FILE__,__FUNCTION__,__LINE__);
+	STRPTR String = (ULONG) regarray[REG68K_A0/4];
+	ULONG Tags = (ULONG) regarray[REG68K_A1/4];
 	return (ULONG) regarray[REG68K_D0/4];
 }
 
