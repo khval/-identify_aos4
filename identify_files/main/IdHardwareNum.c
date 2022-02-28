@@ -32,7 +32,7 @@
 *      IdHardwareNum -- Description
 *
 *   SYNOPSIS
-*      ULONG IdHardwareNum(ULONG value, struct TagItem * Tags);
+*      ULONG IdHardwareNum(ULONG type, struct TagItem * TagList);
 *
 *   FUNCTION
 *
@@ -55,10 +55,12 @@
 *
 */
 
+extern ULONG IdHardwareNum_ppc(ULONG type, struct TagItem *TagList);
+
 ULONG _Identify_IdHardwareNum(struct IdentifyIFace *Self,
-       ULONG value,
-       struct TagItem * Tags)
+       ULONG type,
+       struct TagItem * TagList)
 {
-  return 0;
+	return IdHardwareNum_ppc( type, TagList);
 }
 
