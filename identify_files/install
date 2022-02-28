@@ -1,4 +1,5 @@
 copy /include/#? sdk:Include/include_h/ all
+copy /reference/libraries/identify.h sdk:Include/include_h/libraries/
 
 IF EXISTS identify.library
 copy identify.library libs:
