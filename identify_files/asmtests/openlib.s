@@ -3,6 +3,7 @@
 	include "lvo/dos_lib.i"
 
 	include "//reference/identify_lib.i"
+	include "//reference/libraries/identify.i"
 
 	SECTION main,CODE
 
@@ -26,8 +27,10 @@ INFOTXT	macro
 	move.l	#printf_args,A1	; ARGS
 	move.l	#txt\1,(A1)
 	move.l	A1,D2			; D2
+	move.l	a6,-(sp)
 	move.l	dosBase,a6		; DosBase
 	jsr		_LVOVPrintf(a6)	; Printf
+	move.l	(sp)+,a6
 	endm
 
 INFOVALUE	macro
@@ -35,8 +38,21 @@ INFOVALUE	macro
 	move.l	\1,(A1)
 	move.l	#PRINT_VALUE_FMT,D1	; FMT
 	move.l	#printf_args,D2		; ARG ARRAY
+	move.l	a6,-(sp)
 	move.l	dosBase,a6		; DosBase
 	jsr		_LVOVPrintf(a6)	; Printf
+	move.l	(sp)+,a6
+	endm
+
+PRINTINFO	macro
+	move.l	#printf_args,A1	; ARGS
+	move.l	\2,(A1)
+	move.l	#PRINT_\1_FMT,D1	; FMT
+	move.l	#printf_args,D2		; ARG ARRAY
+	move.l	a6,-(sp)
+	move.l	dosBase,a6		; DosBase
+	jsr		_LVOVPrintf(a6)	; Printf
+	move.l	(sp)+,a6
 	endm
 
 DELAY	macro
@@ -61,10 +77,53 @@ main:
 	BEQ	.not_open
 	move.l	D0,A6
 	JSR _LVOIdHardwareUpdate(a6)
+	INFOVALUE D0
+
+	move.l #IDHW_SYSTEM,D0
+	move.l #0,A0
+	JSR _LVOIdHardwareNum(a6)
+	PRINTINFO SYSTEM,D0
+
+	move.l #IDHW_CPU,D0
+	move.l #0,A0
+	JSR _LVOIdHardwareNum(a6)
+	PRINTINFO CPU,D0
+
+	move.l #IDHW_FPU	,D0
+	move.l #0,A0
+	JSR _LVOIdHardwareNum(a6)
+	PRINTINFO FPU,D0
+
+	move.l #IDHW_MMU,D0
+	move.l #0,A0
+	JSR _LVOIdHardwareNum(a6)
+	PRINTINFO MMU,D0
+
+	move.l #IDHW_POWERPC,D0
+	move.l #0,A0
+	JSR _LVOIdHardwareNum(a6)
+	PRINTINFO POWERPC,D0
+
+	move.l #IDHW_PPCCLOCK,D0
+	move.l #0,A0
+	JSR _LVOIdHardwareNum(a6)
+	PRINTINFO POWERPCCLOCK,D0
+
+	move.l #IDHW_OSVER,D0
+	move.l #0,A0
+	JSR _LVOIdHardwareNum(a6)
+	PRINTINFO OSVER,D0
+
+	move.l #IDHW_WBVER,D0
+	move.l #0,A0
+	JSR _LVOIdHardwareNum(a6)
+	PRINTINFO WBVER,D0
+
+
 .not_open
 
-	INFOVALUE D0
-	DELAY 30
+
+
 
 closeLibs:
 	CLOSELIB	identify
@@ -117,4 +176,32 @@ PRINT_FMT
 
 PRINT_VALUE_FMT
 		dc.b	"VALUE: %08lx",10,0
+
+PRINT_SYSTEM_FMT
+		dc.b	"System: %ld",10,0
+
+PRINT_CPU_FMT:
+		dc.b "CPU %ld",10,0
+
+PRINT_FPU_FMT:
+		dc.b "FPU %ld",10,0
+
+PRINT_MMU_FMT:
+		dc.b "MMU %ld",10,0
+
+PRINT_POWERPC_FMT:
+		dc.b "PowerPC %ld",10,0
+
+PRINT_POWERPCCLOCK_FMT:
+		dc.b "PowerPC frequency %ld hz",10,0
+
+PRINT_POWERFREQ_FMT:
+		dc.b "PowerPC frequency %ld hz",10,0
+
+PRINT_OSVER_FMT:
+		dc.b "OS Version %08lx ",10,0
+
+PRINT_WBVER_FMT:
+		dc.b "WB Version %08lx",10,0
+
 
