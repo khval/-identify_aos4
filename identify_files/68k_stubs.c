@@ -1,6 +1,14 @@
 
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+
 #include <exec/libraries.h>
 #include <exec/emulation.h>
+#include "../locale/locale.h"
+
 
 #define __USE_INLINE__
 
@@ -57,6 +65,22 @@ const ULONG VecTable68K[] = {
 	(ULONG)-1
 };
 
+char osver[30];
+char wbver[30];
+char ppc_clock_str[30];
+const char *str_na = "N/A";
+const char *str_true = "TRUE";
+const char *str_false = "FALSE";
+const char *str_none = "NONE";
+const char *str_yes = "YES";
+const char *str_no = "NO";
+
+ULONG get_osver();
+ULONG get_wbver();
+void get_powerpc_clock_str();
+const char *get_locale_str(uint32 id);
+ULONG IdHardwareNum_ppc(ULONG type, struct TagItem *TagList);
+
 STATIC APTR stub_Open_ppc(ULONG *regarray)
 {
 	struct Library *Base = (struct Library *) regarray[REG68K_A6/4];
@@ -86,30 +110,100 @@ STATIC APTR stub_Expunge_ppc(ULONG *regarray)
 
 STATIC ULONG stub_Reserved_ppc(ULONG *regarray)
 {
-	printf("%s:%s:%d\n",__FILE__,__FUNCTION__,__LINE__);
 	return 0UL;
 }
 
 STATIC ULONG stub_IdExpansion_ppc(ULONG *regarray)
 {
-	printf("%s:%s:%d\n",__FILE__,__FUNCTION__,__LINE__);
 	ULONG TagList = (ULONG) regarray[REG68K_A0/4];
-
 	return (ULONG) regarray[REG68K_D0/4];
+}
+
+const char *get_str(ULONG type, ULONG id)
+{
+	const char *ret = str_na;
+
+	switch (type)
+	{
+		case IDHW_SYSTEM:
+			ret=get_locale_str(4500+id);	break;
+
+		case IDHW_CPU:
+			ret=get_locale_str(5000+id);	break;
+
+		case IDHW_FPU:
+			ret=id ? get_locale_str(5008+id) : str_none;
+			break;
+
+		case IDHW_MMU:
+			ret=id ? str_yes : str_no;	break;
+
+		case IDHW_POWERPC:
+			ret=get_locale_str(7000+id);	break;
+
+		case IDHW_POWERFREQ:
+			break;
+
+		case IDHW_PPCCLOCK:
+			get_powerpc_clock_str();
+			ret = ppc_clock_str;
+			break;
+
+		case IDHW_PPCOS:
+			ret=get_locale_str(7400+id);	break;
+
+		case IDHW_AUDIOSYS:
+			ret=get_locale_str(5700+id);	break;
+
+		case IDHW_GARY:
+			ret=id ? str_true: str_false;	break;
+
+		case IDHW_RAMSEY:
+			ret=id ? str_true: str_false;	break;
+
+		case IDHW_AGNUS:
+			ret=id ? str_true: str_false;	break;
+
+		case IDHW_DENISE:
+			ret=id ? str_true: str_false;	break;
+
+		case IDHW_AGNUSMODE:
+			ret=id ? str_true: str_false;	break;
+
+		case IDHW_TCPIP:
+			ret=id ? str_true: str_false;	break;
+
+		case IDHW_OSNR:
+			ret=get_locale_str(6000+id);	break;
+
+		case IDHW_GFXSYS:
+			ret=get_locale_str(5500+id);	break;
+
+		case IDHW_OSVER:
+			get_osver();
+			ret = osver;
+			break;
+
+		case IDHW_WBVER:
+			get_wbver();
+			ret = wbver;
+			break;
+	}
+
+	return ret;
 }
 
 STATIC STRPTR stub_IdHardware_ppc(ULONG *regarray)
 {
-	printf("%s:%s:%d\n",__FILE__,__FUNCTION__,__LINE__);
-	ULONG Type = (ULONG) regarray[REG68K_D0/4];
-	ULONG TagList = (ULONG) regarray[REG68K_A0/4];
+	ULONG id;
+	id = IdHardwareNum_ppc( (ULONG) regarray[REG68K_D0/4], (struct TagItem *) regarray[REG68K_A0/4]);
+	regarray[REG68K_D0/4] = get_str((ULONG) regarray[REG68K_D0/4], id);
 
 	return (STRPTR) regarray[REG68K_D0/4];
 }
 
 STATIC LONG stub_IdAlert_ppc(ULONG *regarray)
 {
-	printf("%s:%s:%d\n",__FILE__,__FUNCTION__,__LINE__);
 	ULONG Type = (ULONG) regarray[REG68K_D0/4];
 	ULONG TagList = (ULONG) regarray[REG68K_A0/4];
 
@@ -118,7 +212,6 @@ STATIC LONG stub_IdAlert_ppc(ULONG *regarray)
 
 STATIC LONG stub_IdFunction_ppc(ULONG *regarray)
 {
-	printf("%s:%s:%d\n",__FILE__,__FUNCTION__,__LINE__);
 	STRPTR LibName = (STRPTR) regarray[REG68K_A0/4];
 	ULONG Offset = (ULONG) regarray[REG68K_D0/4];
 	ULONG TagList = (ULONG) regarray[REG68K_A1/4];
@@ -154,7 +247,7 @@ ULONG get_powerpc()
 			return IDPPC_604E;
 
 		default:
-			return (model - CPUTYPE_PPC750CXE) + IDPPC_750CXE;
+			return (model - CPUTYPE_PPC750CXE) + IDPPC_750CXE -1;
 	}
 	return 0;
 }
@@ -166,26 +259,43 @@ ULONG get_powerpc_clock()
 	return (ULONG) (frequency);
 }
 
+void get_powerpc_clock_str()
+{
+	uint32 unit = 0;
+	uint64 frequency;
+	double f;
+	const char *array[]={"Hz","KHz","Mhz","GHz","THz",NULL};
+
+	GetCPUInfoTags( GCIT_ProcessorSpeed, &frequency, TAG_DONE);
+
+	f = (double) frequency;
+
+	while (frequency>1000)
+	{
+		f/=1000.0f;
+		frequency/=1000;
+		unit++;
+	}
+
+	sprintf(ppc_clock_str,"%0.2f %s",f,array[unit]);
+
+}
+
 ULONG get_osver()
 {
-	char buffer[30];
-	int32 len = GetVar("kickstart",buffer,30,GVF_GLOBAL_ONLY);
-	if (len)
-	{
-		printf("%s\n",buffer);
-	}
+	unsigned int major,minor;
+	int32 len = GetVar("kickstart",osver,sizeof(osver),GVF_GLOBAL_ONLY);
+	if (len) sscanf(osver,"%u.%u\n",&major,&minor);
+	return (minor << 16) | major;
 }
 
 ULONG get_wbver()
 {
-	char buffer[30];
-	int32 len = GetVar("workbench",buffer,30,GVF_GLOBAL_ONLY);
-	if (len)
-	{
-		printf("%s\n",buffer);
-	}
+	unsigned int major,minor;
+	int32 len = GetVar("workbench",wbver,sizeof(wbver),GVF_GLOBAL_ONLY);
+	if (len) sscanf(wbver,"%u.%u\n",&major,&minor);
+	return (minor << 16) | major;
 }
-
 
 ULONG IdHardwareNum_ppc(ULONG type, struct TagItem *TagList)
 {
@@ -275,21 +385,16 @@ ULONG IdHardwareNum_ppc(ULONG type, struct TagItem *TagList)
 
 STATIC ULONG stub_IdHardwareNum_ppc(ULONG *regarray)
 {
-	printf("%s:%s:%d\n",__FILE__,__FUNCTION__,__LINE__);
-
 	regarray[REG68K_D0/4] = IdHardwareNum_ppc( (ULONG) regarray[REG68K_D0/4], (struct TagItem *) regarray[REG68K_A0/4]);
-
 	return (ULONG) regarray[REG68K_D0/4];
 }
 
 STATIC void stub_IdHardwareUpdate_ppc(ULONG *regarray)
 {
-	printf("%s:%s:%d\n",__FILE__,__FUNCTION__,__LINE__);
 }
 
 STATIC ULONG stub_IdFormatString_ppc(ULONG *regarray)
 {
-	printf("%s:%s:%d\n",__FILE__,__FUNCTION__,__LINE__);
 	STRPTR String = (ULONG) regarray[REG68K_A0/4];
 	ULONG Buffer = (ULONG) regarray[REG68K_A1/4];
 	ULONG Length = (ULONG) regarray[REG68K_D0/4];
@@ -300,7 +405,6 @@ STATIC ULONG stub_IdFormatString_ppc(ULONG *regarray)
 
 STATIC ULONG stub_IdEstimateFormatSize_ppc(ULONG *regarray)
 {
-	printf("%s:%s:%d\n",__FILE__,__FUNCTION__,__LINE__);
 	STRPTR String = (ULONG) regarray[REG68K_A0/4];
 	ULONG Tags = (ULONG) regarray[REG68K_A1/4];
 	return (ULONG) regarray[REG68K_D0/4];

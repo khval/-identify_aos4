@@ -13,7 +13,7 @@ include makefile.cfg
 
 inc=-Isdk31: -Isdk31:includes/include_i
 
-tests = openlib.exe	
+tests = IdHardwareNum.exe	IdHardware.exe
 
 all:	${tests} 
 
@@ -22,13 +22,13 @@ clean:
 
 # compile tests
 
-openlib.exe: openlib.s
-		$(compiler) $(options) $(inc) -Fhunk -o obj/openlib.o openlib.s 
-		$(link) -bamigahunk -o openlib.exe -s  obj/openlib.o
+IdHardwareNum.exe: IdHardwareNum.s
+		$(compiler) $(options) $(inc) -Fhunk -o obj/IdHardwareNum.o IdHardwareNum.s 
+		$(link) -bamigahunk -o IdHardwareNum.exe -s  obj/IdHardwareNum.o
 
-chipmem.exe: chipmem.s
-		$(compiler) $(options) $(inc) -Fhunk -o obj/chipmem.o chipmem.s 
-		$(link) -bamigahunk -o chipmem.exe -s  obj/chipmem.o
+IdHardware.exe: IdHardware.s
+		$(compiler) $(options) $(inc) -Fhunk -o obj/IdHardware.o IdHardware.s 
+		$(link) -bamigahunk -o IdHardware.exe -s  obj/IdHardware.o
 
 timeing.exe: timeing.s
 		$(compiler) $(options) $(inc) -Fhunk -o obj/timeing.o timeing.s 

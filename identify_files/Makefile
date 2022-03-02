@@ -12,8 +12,8 @@ CXX    = $(CROSS_COMPILE)c++
 AS     = $(CROSS_COMPILE)as 
 LD     = $(CROSS_COMPILE)ld 
 RANLIB = $(CROSS_COMPILE)ranlib 
-RM     = delete
-# RM     = rm
+RM     = rm
+CATCOMP = catcomp
 
 # Change these as required
 OPTIMIZE = -O3
@@ -34,13 +34,17 @@ VERSION = 53
 
 # "main" Interface Source Files
 main_SRCS = 68k_stubs.c main/Obtain.c main/Release.c main/IdExpansion.c main/IdHardware.c \
-    main/IdAlert.c main/IdFunction.c main/IdHardwareNum.c \
-    main/IdHardwareUpdate.c main/IdFormatString.c main/IdEstimateFormatSize.c 
+	main/IdAlert.c main/IdFunction.c main/IdHardwareNum.c \
+	main/IdHardwareUpdate.c main/IdFormatString.c main/IdEstimateFormatSize.c \
+	language.c
 
 # -------------------------------------------------------------
 # Nothing should need changing below this line
 
 SRCS = init.c
+
+
+all: make_locale $(TARGET)
 
 OBJS = $(main_SRCS:.c=.o)  $(SRCS:.c=.o)
 # Rules for building
@@ -54,4 +58,15 @@ clean:
 .PHONY: revision
 revision:
 	bumprev $(VERSION) $(TARGET)
+
+make_locale: ../locale/locale.c ../locale/locale.h
+
+../locale/locale.h: ../locale/Identify.cd 
+	@$(CATCOMP) /locale/Identify.cd CFILE /locale/locale.h NOSTRINGS NOARRAY NOBLOCK NOCODE
+
+../locale/locale.c: ../locale/Identify.cd 
+	@$(CATCOMP) /locale/Identify.cd CFILE /locale/locale.c NOBLOCK NOCODE
+
+../locale/locale.o:
+	gcc  -Wall -O3    -c -o ../locale/locale.o ../locale/locale.c -DCATCOMP_ARRAY
 
