@@ -36,6 +36,8 @@ VERSION = 53
 main_SRCS = 68k_stubs.c main/Obtain.c main/Release.c main/IdExpansion.c main/IdHardware.c \
 	main/IdAlert.c main/IdFunction.c main/IdHardwareNum.c \
 	main/IdHardwareUpdate.c main/IdFormatString.c main/IdEstimateFormatSize.c \
+	tools.c \
+	common.c \
 	language.c
 
 # -------------------------------------------------------------

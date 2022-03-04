@@ -54,10 +54,12 @@
 *
 */
 
+const char *IdHardware_ppc( ULONG type, struct TagItem * tags );
+
 STRPTR _Identify_IdHardware(struct IdentifyIFace *Self,
-       ULONG value,
-       struct TagItem * Tags)
+       ULONG type,
+       struct TagItem * tags)
 {
-	return "None";
+	return IdHardware_ppc( type, tags );
 }
 

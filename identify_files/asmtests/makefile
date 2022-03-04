@@ -13,7 +13,7 @@ include makefile.cfg
 
 inc=-Isdk31: -Isdk31:includes/include_i
 
-tests = IdHardwareNum.exe	IdHardware.exe
+tests = IdHardwareNum.exe	IdHardware.exe		IdFormatString.exe
 
 all:	${tests} 
 
@@ -30,9 +30,9 @@ IdHardware.exe: IdHardware.s
 		$(compiler) $(options) $(inc) -Fhunk -o obj/IdHardware.o IdHardware.s 
 		$(link) -bamigahunk -o IdHardware.exe -s  obj/IdHardware.o
 
-timeing.exe: timeing.s
-		$(compiler) $(options) $(inc) -Fhunk -o obj/timeing.o timeing.s 
-		$(link) -bamigahunk -o timeing.exe -s  obj/timeing.o
+IdFormatString.exe: IdFormatString.s
+		$(compiler) $(options) $(inc) -Fhunk -o obj/IdFormatString.o IdFormatString.s 
+		$(link) -bamigahunk -o IdFormatString.exe -s  obj/IdFormatString.o
 
 probe.exe: probe.s
 		$(compiler) $(options) $(inc) -Fhunk -o obj/probe.o probe.s 

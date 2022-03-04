@@ -1,2 +1,6 @@
 
 *.o
+
+identify_files/asmtests/IdHardware.exe
+
+identify_files/asmtests/IdFormatString.exe

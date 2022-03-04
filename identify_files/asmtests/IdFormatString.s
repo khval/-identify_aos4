@@ -65,10 +65,18 @@ writeText	macro
 		jsr _writeText
 		endm
 
-IdHardware macro
+IdHardwareNum macro
 		move.l \1,D0
 		move.l \2,A0
-		JSR _LVOIdHardware(a6)
+		JSR _LVOIdHardwareNum(a6)
+		endm
+
+IdFormatString macro
+		move.l \1,A0
+		move.l \2,A1
+		move.l \3,D0
+		move.l \4,A2
+		JSR _LVOIdFormatString(a6)
 		endm
 
 main:
@@ -78,42 +86,23 @@ main:
 	INFOTXT LibsOpen
 
 	move.l	identifyBase,D0
-
 	TST.l D0
 	BEQ	.not_open
 	move.l	D0,A6
 	JSR _LVOIdHardwareUpdate(a6)
 	INFOVALUE D0
 
-	IdHardware #IDHW_SYSTEM,#0
-	PRINTINFO SYSTEM,D0
+	move.l #buffer,A0
+	move.b	#'A',(A0)++
+	move.b	#'m',(A0)++
+	move.b	#'i',(A0)++
+	move.b	#'g',(A0)++
+	move.b	#'a',(A0)++
+	move.b	#0,(A0)
 
-	IdHardware #IDHW_OSNR,#0
-	PRINTINFO OSNR,D0
-
-	IdHardware #IDHW_CPU,#0
-	PRINTINFO CPU,D0
-
-	IdHardware #IDHW_FPU,#0
-	PRINTINFO FPU,D0
-
-	IdHardware #IDHW_MMU,#0
-	PRINTINFO MMU,D0
-
-	IdHardware #IDHW_PPCOS,#0
-	PRINTINFO PPCOS,D0
-
-	IdHardware #IDHW_POWERPC,#0
-	PRINTINFO POWERPC,D0
-
-	IdHardware #IDHW_PPCCLOCK,#0
-	PRINTINFO POWERPCCLOCK,D0
-
-	IdHardware #IDHW_OSVER,#0
-	PRINTINFO OSVER,D0
-
-	IdHardware #IDHW_WBVER,#0
-	PRINTINFO WBVER,D0
+	IdFormatString #hardware_fmt,#buffer,#128,#$0
+	move.l #buffer,D0
+	PRINTINFO TXT, D0
 
 .not_open
 
@@ -166,40 +155,17 @@ identifyName:
 PRINT_FMT
 		dc.b	"%s",10,0
 
+PRINT_TXT_FMT
+		dc.b	"TXT: %s",10,0
+
 PRINT_VALUE_FMT
-		dc.b	"VALUE: %d",10,0
+		dc.b	"VALUE: %08lx",10,0
 
-PRINT_SYSTEM_FMT
-		dc.b	"System: %s",10,0
+hello
+		dc.b "hello",0
 
-PRINT_OSNR_FMT:
-		dc.b "AmigaOS: %s",10,0
+hardware_fmt
+		dc.b "CPU: $CPU$ FPU: $FPU$ PPCOS: $PPCOS$, POWERPC: $POWERPC$ $PPCCLOCK$",10,0
 
-PRINT_CPU_FMT:
-		dc.b "CPU %s",10,0
-
-PRINT_FPU_FMT:
-		dc.b "FPU %s",10,0
-
-PRINT_MMU_FMT:
-		dc.b "MMU %s",10,0
-
-PRINT_PPCOS_FMT:
-		dc.b "PPC OS: %s",10,0
-
-PRINT_POWERPC_FMT:
-		dc.b "PowerPC %s",10,0
-
-PRINT_POWERPCCLOCK_FMT:
-		dc.b "PowerPC frequency %s",10,0
-
-PRINT_POWERFREQ_FMT:
-		dc.b "PowerPC frequency %s",10,0
-
-PRINT_OSVER_FMT:
-		dc.b "OS Version: %s ",10,0
-
-PRINT_WBVER_FMT:
-		dc.b "WB Version %s",10,0
-
-
+buffer:
+		ds.b	128
