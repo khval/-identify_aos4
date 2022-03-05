@@ -1,6 +1,6 @@
 
 *.o
 
-identify_files/asmtests/IdHardware.exe
+*.library
 
-identify_files/asmtests/IdFormatString.exe
+*.exe
