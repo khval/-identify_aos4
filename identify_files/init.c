@@ -29,6 +29,7 @@
 #include <stdarg.h>
 #include <proto/dos.h>
 #include <proto/version.h>
+#include <proto/expansion.h>
 
 struct NewlibIFace * INewlib = NULL;
 struct Library *NewLibBase = NULL;
@@ -38,6 +39,11 @@ struct Library *DOSBase = NULL;
 
 struct VersionIFace *IVersion = NULL;
 struct Library *VersionBase = NULL;
+
+
+struct ExpansionIFace *IExpansion  = NULL;
+struct Library *ExpansionBase  = NULL;
+
 
 struct ExecIFace *IExec = NULL;
 
@@ -311,9 +317,10 @@ BOOL open_lib( const char *name, int ver , const char *iname, int iver, struct L
 
 BOOL open_libs()
 {
-	if ( ! open_lib( "dos.library", 50L , "main", 1, &DOSBase, (struct Interface **) &IDOS  ) ) return FALSE;
-	if ( ! open_lib( "newlib.library", 50L , "main", 1, &NewLibBase, (struct Interface **) &INewlib  ) ) return FALSE;
-	if ( ! open_lib( "version.library", 50L , "main", 1, &VersionBase, (struct Interface **) &IVersion  ) ) return FALSE;
+	if ( ! open_lib( "dos.library",		50L, "main", 1, (struct Library **) &DOSBase,		(struct Interface **) &IDOS  ) ) return FALSE;
+	if ( ! open_lib( "newlib.library",		50L, "main", 1, (struct Library **) &NewLibBase,		(struct Interface **) &INewlib  ) ) return FALSE;
+	if ( ! open_lib( "version.library",		50L, "main", 1, (struct Library **) &VersionBase,	(struct Interface **) &IVersion  ) ) return FALSE;
+	if ( ! open_lib( "expansion.library",	50L, "main", 1, (struct Library **) &ExpansionBase,	(struct Interface **) &IExpansion  ) ) return FALSE;
 
 	return TRUE;
 }
@@ -326,6 +333,7 @@ void close_libs()
 	close_lib( DOSBase, IDOS);
 	close_lib( NewLibBase, INewlib);
 	close_lib( VersionBase, IVersion);
+	close_lib( ExpansionBase, IExpansion);
 }
 
 

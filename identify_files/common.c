@@ -10,6 +10,7 @@
 
 #define __USE_INLINE__
 
+#include <proto/expansion.h>
 #include <proto/version.h>
 
 #include "tools.h"
@@ -29,12 +30,61 @@ extern const char *get_locale_str(uint32 id);
 
 ULONG IdHardwareNum_ppc(ULONG type, struct TagItem *TagList)
 {
+	uint32 mret = 0;
 	ULONG ret = 0;
 
 	switch (type)
 	{
 		case IDHW_SYSTEM:
-			ret = IDSYS_AmigaONE_X1000;
+
+			GetMachineInfoTags( GMIT_Machine, &mret, TAG_END);
+
+			switch (mret)
+			{
+    				case MACHINETYPE_UNKNOWN:
+					ret = IDSYS_Unknown;
+					break;
+
+    				case MACHINETYPE_BLIZZARDPPC:
+					ret = IDSYS_AMIGA1200;
+					break;
+
+    				case MACHINETYPE_CYBERSTORMPPC:
+					ret = IDSYS_AMIGA4000;
+					break;
+
+    				case MACHINETYPE_AMIGAONE:
+					ret = IDSYS_AmigaONE;
+					break;
+
+    				case MACHINETYPE_SAM440:
+					ret = IDSYS_Sam440;
+					break;
+
+    				case MACHINETYPE_SAM460:
+					ret = IDSYS_Sam460;
+					break;
+
+    				case MACHINETYPE_X1000:
+					ret = IDSYS_AmigaONE_X1000;
+					break;
+
+    				case MACHINETYPE_CHUNYE:
+					ret = IDSYS_AmigaONE_X1222;
+					break;
+
+    				case MACHINETYPE_X5000_20:
+					ret = IDSYS_AmigaONE_X5020;
+					break;
+
+    				case MACHINETYPE_X5000_40:
+					ret = IDSYS_AmigaONE_X5040;
+					break;
+
+    				case MACHINETYPE_PEGASOS2:
+					ret = IDSYS_Pegasus_II;
+					break;
+			}
 			break;
 
 		case IDHW_CPU:
@@ -120,7 +170,8 @@ const char *get_str(ULONG type, ULONG id)
 	switch (type)
 	{
 		case IDHW_SYSTEM:
-			ret=get_locale_str(4500+id);	break;
+			GetMachineInfoTags( GMIT_MachineString,&ret, TAG_END);
+			break;
 
 		case IDHW_CPU:
 			ret=get_locale_str(5000+id);	break;
@@ -205,28 +256,19 @@ void IdFormatString(const char *String, char *Buffer, ULONG BufferLength)
 	char *d;
 	char *BufferE = Buffer + BufferLength-1;
 
-	printf("Buffer %08x, %08x BufferLength %d\n",Buffer,BufferE,BufferLength);
-
 	d = Buffer;
 	for (c=String;*c;)
 	{
-		l = 1; r = 1;
-
-		printf("%c\n",*c);
+		l = 1;
 
 		if (*c=='$')
 		{
 			id = get_tag_id(c);
 
-			printf("ID: %d\n",id);
-
 			if (id!=-1)
 			{
-				printf("Found\n");
-
 				l = strlen(str_tags[id]);				
 				r = IdHardware_ppc( id, NULL );
-
 				if (r) for (sc = r;(*sc)&&(d<BufferE);*d++=*sc++);
 			}
 		}
@@ -242,9 +284,38 @@ void IdFormatString(const char *String, char *Buffer, ULONG BufferLength)
 		else c+=l;
 	}
 	*d = 0;
-
-	printf("%08x\n",d);
 }
+
+int IdEstimateFormatSize(const char *String)
+{
+	int ret = 0;
+	LONG l,id;
+	const char *c,*r, *sc;
+
+	for (c=String;*c;)
+	{
+		l = 1;
+		if (*c=='$')
+		{
+			id = get_tag_id(c);
+			if (id!=-1)
+			{
+				l = strlen(str_tags[id]);				
+				r = IdHardware_ppc( id, NULL );
+				if (r) ret+=strlen(r);
+			}
+		}
+
+		if (l==1)
+		{
+			ret++; c++;
+		}
+		else c+=l;
+	}
+
+	return ret+1;
+}
+
 
 const char *str_tags[]={
 		"$SYSTEM$",

@@ -165,7 +165,7 @@ hello
 		dc.b "hello",0
 
 hardware_fmt
-		dc.b "CPU: $CPU$ FPU: $FPU$ PPCOS: $PPCOS$, POWERPC: $POWERPC$ $PPCCLOCK$",10,0
+		dc.b "CPU: $CPU$ FPU: $FPU$ PPCOS: $PPCOS$, POWERPC: $POWERPC$ CLOCK: $PPCCLOCK$ SYSTEM: $SYSTEM$",10,0
 
 buffer:
 		ds.b	128

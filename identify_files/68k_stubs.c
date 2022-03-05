@@ -144,9 +144,6 @@ void dump_taglist(struct TagItem *tag)
 STATIC ULONG stub_IdHardwareNum_ppc(ULONG *regarray)
 {
 	regarray[REG68K_D0/4] = IdHardwareNum_ppc( (ULONG) regarray[REG68K_D0/4], (struct TagItem *) regarray[REG68K_A0/4]);
-
-	printf("%s:%s:%d\n",__FILE__,__FUNCTION__,__LINE__);
-
 	return (ULONG) regarray[REG68K_D0/4];
 }
 
@@ -160,23 +157,17 @@ STATIC ULONG stub_IdFormatString_ppc(ULONG *regarray)
 	STRPTR String = (STRPTR) regarray[REG68K_A0/4];
 	char * Buffer = (char *) regarray[REG68K_A1/4];
 	ULONG Length = (ULONG) regarray[REG68K_D0/4];
-	ULONG Tags = (ULONG) regarray[REG68K_A2/4];
-
-	printf("%s:%s:%d\n",__FILE__,__FUNCTION__,__LINE__);
 
 	IdFormatString( String, Buffer, Length);
 	regarray[REG68K_D0/4] = strlen(Buffer);
-
 	return (ULONG) regarray[REG68K_D0/4];
 }
 
+int IdEstimateFormatSize(const char *String);
+
 STATIC ULONG stub_IdEstimateFormatSize_ppc(ULONG *regarray)
 {
-	STRPTR String = (STRPTR) regarray[REG68K_A0/4];
-	ULONG Tags = (ULONG) regarray[REG68K_A1/4];
-
-	printf("%s:%s:%d\n",__FILE__,__FUNCTION__,__LINE__);
-
+	regarray[REG68K_D0/4] = IdEstimateFormatSize( (const char *) regarray[REG68K_A0/4] );
 	return (ULONG) regarray[REG68K_D0/4];
 }
 
