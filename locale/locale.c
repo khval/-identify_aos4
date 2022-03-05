@@ -265,14 +265,14 @@
 #define MSG_HW_UAE 4512
 #define MSG_HW_AMIGA4000T 4513
 #define MSG_HW_AMIGAXL 4514
-#define MSG_HW_AmigaONE_SE 4515
-#define MSG_HW_AmigaONE_XE 4516
-#define MSG_HW_AmigaONE_Micro 4517
-#define MSG_HW_Sam440 4518
-#define MSG_HW_Sam460 4519
-#define MSG_HW_AmigaONE_X1000 4520
-#define MSG_HW_AmigaONE_X5000 4521
-#define MSG_HW_AmigaONE_X1222 4522
+#define MSG_HW_Unknown 4515
+#define MSG_HW_AmigaONE 4516
+#define MSG_HW_Sam440 4517
+#define MSG_HW_Sam460 4518
+#define MSG_HW_AmigaONE_X1000 4519
+#define MSG_HW_AmigaONE_X1222 4520
+#define MSG_HW_AmigaONE_X5020 4521
+#define MSG_HW_AmigaONE_X5040 4522
 #define MSG_HW_Pegasus_I 4523
 #define MSG_HW_Pegasus_II 4524
 #define MSG_HW_Efika 4525
@@ -636,14 +636,14 @@
 #define MSG_HW_UAE_STR "UAE"
 #define MSG_HW_AMIGA4000T_STR "Amiga 4000 T"
 #define MSG_HW_AMIGAXL_STR "AmigaXL"
-#define MSG_HW_AmigaONE_SE_STR "AmigaONE SE"
-#define MSG_HW_AmigaONE_XE_STR "AmigaONE XE"
-#define MSG_HW_AmigaONE_Micro_STR "AmigaONE Micro"
+#define MSG_HW_Unknown_STR "Unknown"
+#define MSG_HW_AmigaONE_STR "AmigaONE (SE / XE / Micro)"
 #define MSG_HW_Sam440_STR "Sam440"
 #define MSG_HW_Sam460_STR "Sam460"
 #define MSG_HW_AmigaONE_X1000_STR "AmigaONE X1000"
-#define MSG_HW_AmigaONE_X5000_STR "AmigaONE X5000"
 #define MSG_HW_AmigaONE_X1222_STR "AmigaONE X1222"
+#define MSG_HW_AmigaONE_X5020_STR "AmigaONE X5020"
+#define MSG_HW_AmigaONE_X5040_STR "AmigaONE X5040"
 #define MSG_HW_Pegasus_I_STR "Pegasus I"
 #define MSG_HW_Pegasus_II_STR "Pegasus II"
 #define MSG_HW_Efika_STR "Efika"
@@ -1015,14 +1015,14 @@ STATIC CONST struct CatCompArrayType CatCompArray[] =
     {MSG_HW_UAE,(CONST_STRPTR)MSG_HW_UAE_STR},
     {MSG_HW_AMIGA4000T,(CONST_STRPTR)MSG_HW_AMIGA4000T_STR},
     {MSG_HW_AMIGAXL,(CONST_STRPTR)MSG_HW_AMIGAXL_STR},
-    {MSG_HW_AmigaONE_SE,(CONST_STRPTR)MSG_HW_AmigaONE_SE_STR},
-    {MSG_HW_AmigaONE_XE,(CONST_STRPTR)MSG_HW_AmigaONE_XE_STR},
-    {MSG_HW_AmigaONE_Micro,(CONST_STRPTR)MSG_HW_AmigaONE_Micro_STR},
+    {MSG_HW_Unknown,(CONST_STRPTR)MSG_HW_Unknown_STR},
+    {MSG_HW_AmigaONE,(CONST_STRPTR)MSG_HW_AmigaONE_STR},
     {MSG_HW_Sam440,(CONST_STRPTR)MSG_HW_Sam440_STR},
     {MSG_HW_Sam460,(CONST_STRPTR)MSG_HW_Sam460_STR},
     {MSG_HW_AmigaONE_X1000,(CONST_STRPTR)MSG_HW_AmigaONE_X1000_STR},
-    {MSG_HW_AmigaONE_X5000,(CONST_STRPTR)MSG_HW_AmigaONE_X5000_STR},
     {MSG_HW_AmigaONE_X1222,(CONST_STRPTR)MSG_HW_AmigaONE_X1222_STR},
+    {MSG_HW_AmigaONE_X5020,(CONST_STRPTR)MSG_HW_AmigaONE_X5020_STR},
+    {MSG_HW_AmigaONE_X5040,(CONST_STRPTR)MSG_HW_AmigaONE_X5040_STR},
     {MSG_HW_Pegasus_I,(CONST_STRPTR)MSG_HW_Pegasus_I_STR},
     {MSG_HW_Pegasus_II,(CONST_STRPTR)MSG_HW_Pegasus_II_STR},
     {MSG_HW_Efika,(CONST_STRPTR)MSG_HW_Efika_STR},
