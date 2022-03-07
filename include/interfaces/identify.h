@@ -41,7 +41,7 @@ struct IdentifyIFace
 	void APICALL (*IdFunction)(struct IdentifyIFace *Self, STRPTR str, LONG value, struct TagItem * Tags);
 	ULONG APICALL (*IdHardwareNum)(struct IdentifyIFace *Self, ULONG value, struct TagItem * Tags);
 	void APICALL (*IdHardwareUpdate)(struct IdentifyIFace *Self);
-	void APICALL (*IdFormatString)(struct IdentifyIFace *Self, STRPTR str1, STRPTR str2, struct TagItem * Tags);
+	void APICALL (*IdFormatString)(struct IdentifyIFace *Self, STRPTR String, STRPTR Buffer, ULONG BufferLength, struct TagItem * Tags);
 	ULONG APICALL (*IdEstimateFormatSize)(struct IdentifyIFace *Self, STRPTR str, struct TagItem * Tags);
 };
 

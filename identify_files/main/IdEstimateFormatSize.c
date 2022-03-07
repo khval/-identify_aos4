@@ -55,10 +55,12 @@
 *
 */
 
+int IdEstimateFormatSize(const char *String);
+
 ULONG _Identify_IdEstimateFormatSize(struct IdentifyIFace *Self,
-       STRPTR str,
+       STRPTR String,
        struct TagItem * Tags)
 {
-  return 0;
+	return IdEstimateFormatSize(String);
 }
 

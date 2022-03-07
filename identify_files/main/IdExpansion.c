@@ -53,9 +53,11 @@
 *
 */
 
+LONG IdExpansion(struct TagItem *Tags);
+
 LONG _Identify_IdExpansion(struct IdentifyIFace *Self,
        struct TagItem * Tags)
 {
-	return 0;
+	return IdExpansion(Tags);
 }
 

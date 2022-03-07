@@ -56,8 +56,11 @@
 *
 */
 
+void IdFormatString(const char *String, char *Buffer, ULONG BufferLength);
+
 void _Identify_IdFormatString(struct IdentifyIFace *Self,
-       STRPTR str1, STRPTR str2,  struct TagItem * Tags)
+       STRPTR String, STRPTR Buffer,  ULONG BufferLength, struct TagItem * Tags)
 {
+	IdFormatString(String, Buffer, BufferLength);
 }
 

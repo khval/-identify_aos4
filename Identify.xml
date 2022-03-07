@@ -38,8 +38,9 @@
 		</method>
 
 		<method name="IdFormatString" result="void">
-			<arg name="str1" type="STRPTR"/>
-			<arg name="str2" type="STRPTR"/>
+			<arg name="String" type="STRPTR"/>
+			<arg name="Buffer" type="STRPTR"/>
+			<arg name="BufferLength" type="ULONG"/>
 			<arg name="Tags" type="struct TagItem *"/>
 		</method>
 

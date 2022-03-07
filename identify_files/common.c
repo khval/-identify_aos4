@@ -202,9 +202,6 @@ ULONG IdHardwareNum_ppc(ULONG type, struct TagItem *TagList)
 				ret = ReadEClock( &eclock );
 			}
 			break;
-
-		default:
-			printf("unknown type: %d\n",type);
 	}
 
 	return ret;

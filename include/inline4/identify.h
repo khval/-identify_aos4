@@ -32,7 +32,7 @@
 #define IdFunction(str, value, Tags) IdentifyIFace->IdFunction((str), (value), (Tags))
 #define IdHardwareNum(value, Tags) IdentifyIFace->IdHardwareNum((value), (Tags))
 #define IdHardwareUpdate() IdentifyIFace->IdHardwareUpdate()
-#define IdFormatString(str1, str2, Tags) IdentifyIFace->IdFormatString((str1), (str2), (Tags))
+#define IdFormatString(String, Buffer, BufferLength, Tags) IdentifyIFace->IdFormatString((String), (Buffer), (BufferLength), (Tags))
 #define IdEstimateFormatSize(str, Tags) IdentifyIFace->IdEstimateFormatSize((str), (Tags))
 
 #endif /* INLINE4_IDENTIFY_H */
