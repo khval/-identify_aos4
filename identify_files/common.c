@@ -3,17 +3,28 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <proto/exec.h>
-#include <proto/dos.h>
 #include <utility/tagitem.h>
 #include <libraries/identify.h>
 
 #define __USE_INLINE__
 
+#include <proto/exec.h>
+#include <proto/dos.h>
 #include <proto/expansion.h>
 #include <proto/version.h>
+#include <proto/timer.h>
 
 #include "tools.h"
+
+char chipram[10];
+char fastram[10];
+char vmmram[10];
+char vmmchipram[10];
+char totalram[10];
+char execver[30];
+char eclock_str[30];
+char vblackfreq_str[30];
+char powerfreq_str[30];
 
 char osver[30];
 char wbver[30];
@@ -24,6 +35,8 @@ const char *str_false = "FALSE";
 const char *str_none = "NONE";
 const char *str_yes = "YES";
 const char *str_no = "NO";
+
+extern struct PCIIFace *IPCI;
 
 extern const char *get_locale_str(uint32 id);
 
@@ -99,12 +112,16 @@ ULONG IdHardwareNum_ppc(ULONG type, struct TagItem *TagList)
 			ret = IDMMU_68060;
 			break;
 
+		case IDHW_VBLANKFREQ:
+			ret = (struct ExecIFace *)(*(struct ExecBase **)4) -> VBlankFrequency;
+			break;
+
 		case IDHW_POWERPC:
 			ret = get_powerpc();
 			break;
 
 		case IDHW_POWERFREQ:
-			ret = 0;
+			ret = (struct ExecIFace *)(*(struct ExecBase **)4) -> PowerSupplyFrequency;
 			break;
 
 		case IDHW_PPCCLOCK:
@@ -158,6 +175,36 @@ ULONG IdHardwareNum_ppc(ULONG type, struct TagItem *TagList)
 		case IDHW_WBVER:
 			ret = get_wbver();
 			break;
+
+		case IDHW_EXECVER:
+			ret = (struct ExecIFace *)(*(struct ExecBase **)4) -> SoftVer;
+			break;
+
+		case IDHW_CHIPRAM:
+			ret =  AvailMem(MEMF_TOTAL|MEMF_CHIP);
+			break;
+
+		case IDHW_FASTRAM:
+			ret = AvailMem(MEMF_TOTAL|MEMF_FAST);
+			break;
+
+		case IDHW_VMMFASTRAM:
+			ret = AvailMem(MEMF_TOTAL|MEMF_VIRTUAL);
+			break;
+
+		case IDHW_VMMRAM:
+			ret = AvailMem(MEMF_TOTAL|MEMF_VIRTUAL);
+			break;
+
+		case IDHW_ECLOCK:
+			{
+				struct EClockVal eclock;
+				ret = ReadEClock( &eclock );
+			}
+			break;
+
+		default:
+			printf("unknown type: %d\n",type);
 	}
 
 	return ret;
@@ -186,7 +233,14 @@ const char *get_str(ULONG type, ULONG id)
 		case IDHW_POWERPC:
 			ret=get_locale_str(7000+id);	break;
 
+		case IDHW_VBLANKFREQ:
+			get_clock_str(id, vblackfreq_str);
+			ret = vblackfreq_str;
+			break;
+
 		case IDHW_POWERFREQ:
+			get_clock_str(id, powerfreq_str);
+			ret = powerfreq_str;
 			break;
 
 		case IDHW_PPCCLOCK:
@@ -224,6 +278,12 @@ const char *get_str(ULONG type, ULONG id)
 		case IDHW_GFXSYS:
 			ret=get_locale_str(5500+id);	break;
 
+
+		case IDHW_EXECVER:
+			sprintf(execver,"%d", (struct ExecIFace *)(*(struct ExecBase **)4) -> SoftVer);
+			ret = execver;
+			break;
+
 		case IDHW_OSVER:
 			get_osver();
 			ret = osver;
@@ -232,6 +292,40 @@ const char *get_str(ULONG type, ULONG id)
 		case IDHW_WBVER:
 			get_wbver();
 			ret = wbver;
+			break;
+
+
+		case IDHW_PLNCHIPRAM:
+		case IDHW_CHIPRAM:
+			ram_to_str(AvailMem(MEMF_TOTAL|MEMF_CHIP),chipram);
+			ret = chipram;
+			break;
+
+		case IDHW_PLNFASTRAM:
+		case IDHW_FASTRAM:
+			ram_to_str(AvailMem(MEMF_TOTAL|MEMF_FAST),fastram);
+			ret = fastram;
+			break;
+
+		case IDHW_PLNRAM:
+			ram_to_str(AvailMem(MEMF_TOTAL),totalram);
+			ret = totalram;
+			break;
+
+		case IDHW_VMMCHIPRAM:
+			ram_to_str(0,vmmchipram);
+			ret = vmmchipram;
+			break;
+
+		case IDHW_VMMRAM:
+		case IDHW_VMMFASTRAM:
+			ram_to_str(AvailMem(MEMF_TOTAL|MEMF_VIRTUAL),vmmram);
+			ret = vmmram;
+			break;
+
+		case IDHW_ECLOCK:
+			get_clock_str(id, eclock_str);
+			ret = eclock_str;
 			break;
 	}
 
@@ -377,4 +471,119 @@ const char *str_tags[]={
 		"$ROMVER$",
 		"$RTC$",
 		NULL};
+
+
+void IdExpansion_write_tags(struct PCIDevice *device, struct TagItem *Tags)
+{
+	struct TagItem *Tag;
+
+	uint16 VendorID = device->ReadConfigWord(PCI_VENDOR_ID);
+	uint16 DeviceID = device->ReadConfigWord(PCI_DEVICE_ID);
+
+
+	for (Tag = Tags; Tag -> ti_Tag != TAG_DONE; Tag ++ )
+	{
+		switch (Tag -> ti_Tag)
+		{
+
+			case IDTAG_ManufStr:
+					sprintf( (char *) Tag -> ti_Data, "%04x",VendorID );
+					break;
+
+			case IDTAG_ProdStr:
+					sprintf( (char *) Tag -> ti_Data, "%04x",DeviceID );
+					break;
+
+			case IDTAG_ClassStr:
+					sprintf( (char *) Tag -> ti_Data, "%s","PCI/PCIe/AGP" );
+					break;
+
+			case IDTAG_Secondary:
+					*((ULONG *) (Tag -> ti_Data)) = 1;
+					break;
+
+			case IDTAG_ClassID:
+					*((ULONG *) (Tag -> ti_Data)) = 1;
+					break;
+
+			case IDTAG_UnknownFlag:
+					*((ULONG *) (Tag -> ti_Data)) = 1;
+					break;
+
+			case IDTAG_Delegate:
+					*((ULONG *) (Tag -> ti_Data)) = 1;
+					break;
+		}
+	}	
+}
+
+LONG IdExpansion(struct TagItem *Tags)
+{
+	struct PCIDevice *device = NULL;
+	struct ConfigDev **cd = NULL;
+	struct TagItem *Tag;
+	ULONG Localize = 0;
+	ULONG BufferLength = 30;
+
+	for (Tag = Tags; Tag -> ti_Tag != TAG_DONE; Tag ++ )
+	{
+		switch (Tag -> ti_Tag)
+		{
+			case IDTAG_ConfigDev:
+					printf("DTAG_ConfigDev\n"); break;
+
+			case IDTAG_ManufID:
+					printf("DTAG_ManufID\n");	break;
+
+			case IDTAG_ProdID:
+					printf("DTAG_ProdID\n"); break;
+
+			case IDTAG_Expansion:
+					printf("DTAG_Expansion\n");
+					cd = (struct ConfigDev **) (Tag -> ti_Data); break;
+
+			case IDTAG_Localize:
+					Localize = Tag -> ti_Data;	break;
+
+			case IDTAG_StrLength:
+					BufferLength = Tag -> ti_Data;	break;					
+		}
+	}
+
+	if (!cd)
+	{
+		printf("sorry can't do it\n");
+		return IDERR_DONE;
+	}
+
+	if (!*cd) 
+	{
+		*cd = malloc(sizeof(struct ConfigDev));
+		(*cd) -> cd_SlotAddr = 0;
+	}
+	else	(*cd) -> cd_SlotAddr ++;
+
+	if (!*cd)
+	{
+		printf("sorry no mem\n");
+		return IDERR_DONE;	// failed to alloc mem.
+	}
+
+	device = IPCI -> FindDeviceTags( FDT_Index, (*cd) -> cd_SlotAddr , TAG_END );
+	if (device)
+	{
+		(*cd) -> cd_Rom.er_Manufacturer =  device->ReadConfigWord(PCI_VENDOR_ID);
+
+		IdExpansion_write_tags(device,Tags);
+		IPCI -> FreeDevice( device );
+	}
+	else 
+	{
+		free(*cd);	// we are done...
+		*cd = NULL;
+		return IDERR_DONE;
+	}
+
+	return 0;
+}
 

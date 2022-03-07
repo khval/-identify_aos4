@@ -31,6 +31,11 @@
 #include <proto/version.h>
 #include <proto/expansion.h>
 
+
+#define __USE_INLINE__
+#include <proto/timer.h>
+
+
 struct NewlibIFace * INewlib = NULL;
 struct Library *NewLibBase = NULL;
 
@@ -40,12 +45,16 @@ struct Library *DOSBase = NULL;
 struct VersionIFace *IVersion = NULL;
 struct Library *VersionBase = NULL;
 
-
 struct ExpansionIFace *IExpansion  = NULL;
 struct Library *ExpansionBase  = NULL;
 
+struct TimerIFace *ITimer = NULL;
+struct Device *TimerBase = NULL;
 
+struct PCIIFace *IPCI = NULL;
 struct ExecIFace *IExec = NULL;
+
+static struct TimeRequest timereq;
 
 struct _Library
 {
@@ -315,12 +324,33 @@ BOOL open_lib( const char *name, int ver , const char *iname, int iver, struct L
 	return (*interface) ? TRUE : FALSE;
 }
 
+
+BOOL open_timer_device()
+{
+	// Open timer.device
+	if (IExec -> OpenDevice(TIMERNAME, UNIT_MICROHZ, (struct IORequest *)&timereq, 0)) {
+		return FALSE;
+	}
+	TimerBase = (struct Library *) timereq.Request.io_Device;
+	ITimer = (struct TimerIFace *) IExec -> GetInterface(TimerBase,"main",1L,NULL) ;
+	return ITimer ? TRUE : FALSE;
+}
+
+void close_timer_device()
+{
+	if (TimerBase) IExec -> CloseDevice((struct IORequest *) &timereq);
+}
+
 BOOL open_libs()
 {
 	if ( ! open_lib( "dos.library",		50L, "main", 1, (struct Library **) &DOSBase,		(struct Interface **) &IDOS  ) ) return FALSE;
 	if ( ! open_lib( "newlib.library",		50L, "main", 1, (struct Library **) &NewLibBase,		(struct Interface **) &INewlib  ) ) return FALSE;
 	if ( ! open_lib( "version.library",		50L, "main", 1, (struct Library **) &VersionBase,	(struct Interface **) &IVersion  ) ) return FALSE;
 	if ( ! open_lib( "expansion.library",	50L, "main", 1, (struct Library **) &ExpansionBase,	(struct Interface **) &IExpansion  ) ) return FALSE;
+	if ( ! open_timer_device() ) return FALSE;
+
+	IPCI = (struct PCIIFace *) IExec->GetInterface( ExpansionBase, "pci", 1, NULL );
+	if (!IPCI) return FALSE;
 
 	return TRUE;
 }
@@ -330,10 +360,16 @@ void close_libs()
 {
 	struct ExecIFace *IExec = (struct ExecIFace *)(*(struct ExecBase **)4)->MainInterface;
 
+	if (IPCI) IExec->DropInterface( IPCI );
+	IPCI = NULL;
+
+	close_timer_device();
 	close_lib( DOSBase, IDOS);
 	close_lib( NewLibBase, INewlib);
 	close_lib( VersionBase, IVersion);
 	close_lib( ExpansionBase, IExpansion);
+
+
 }
 
 

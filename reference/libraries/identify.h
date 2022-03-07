@@ -173,17 +173,17 @@ struct IdentifyBase {
 #define IDSYS_UAE         (12)    /*  Ubiquitous Amiga Emulator */
 #define IDSYS_AMIGA4000T  (13)    /*  Amiga 4000 Tower */
 #define IDSYS_AMIGAXL     (14)    /*  AmigaXL */
-#define IDSYS_AmigaONE_SE (15)
-#define IDSYS_AmigaONE_XE (16)
-#define IDSYS_AmigaONE_Micro (17)
+#define IDSYS_Unknown (15)
+#define IDSYS_AmigaONE (16)     /*  AmigaONE SE / XE / Micro */
 #define IDSYS_Sam440 (18)
 #define IDSYS_Sam460 (19)
 #define IDSYS_AmigaONE_X1000 (20)
-#define IDSYS_AmigaONE_X5000 (21)
-#define IDSYS_AmigaONE_X1222 (22)
-#define IDSYS_Pegasus_I (23)
-#define IDSYS_Pegasus_II (24)
-#define IDSYS_Efika (25)
+#define IDSYS_AmigaONE_X1222 (21)
+#define IDSYS_AmigaONE_X5020 (22)
+#define IDSYS_AmigaONE_X5040 (23)
+#define IDSYS_Pegasus_I (24)
+#define IDSYS_Pegasus_II (25)
+#define IDSYS_Efika (26)
 
 /*
  * IDHW_CPU numerical result codes

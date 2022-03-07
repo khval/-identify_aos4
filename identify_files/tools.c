@@ -1,6 +1,8 @@
 
 #define __USE_INLINE__
 
+#include <string.h>
+
 #include <stdio.h>
 #include <proto/exec.h>
 #include <proto/dos.h>
@@ -20,7 +22,6 @@ const char *IdHardware_ppc(ULONG type, struct TagItem *TagList);
 
 LONG get_tag_id(const char *tag)
 {
-	ULONG ret = 0;
 	const char **i;
 
 	for (i=str_tags;*i;i++)
@@ -54,14 +55,27 @@ ULONG get_powerpc_clock()
 	return (ULONG) (frequency);
 }
 
-void get_powerpc_clock_str()
+void ram_to_str(uint32 size,char *dest_str)
 {
 	uint32 unit = 0;
-	uint64 frequency;
+	double sizef = (double) size;
+	const char *array[]={"B","KB","MB","GB","TB",NULL};
+
+	while (size > 1000)
+	{
+		sizef/=1024.0f;
+		size/=1024;
+		unit++;
+	}
+
+	sprintf(dest_str,"%0.2f %s",sizef,array[unit]);
+}
+
+void get_clock_str(uint64 frequency, char *dest_str)
+{
+	uint32 unit = 0;
 	double f;
 	const char *array[]={"Hz","KHz","Mhz","GHz","THz",NULL};
-
-	GetCPUInfoTags( GCIT_ProcessorSpeed, &frequency, TAG_DONE);
 
 	f = (double) frequency;
 
@@ -72,9 +86,17 @@ void get_powerpc_clock_str()
 		unit++;
 	}
 
-	sprintf(ppc_clock_str,"%0.2f %s",f,array[unit]);
+	sprintf(dest_str,"%0.2f %s",f,array[unit]);
 
 }
+
+void get_powerpc_clock_str()
+{
+	uint64 frequency;
+	GetCPUInfoTags( GCIT_ProcessorSpeed, &frequency, TAG_DONE);
+	get_clock_str( frequency, ppc_clock_str);
+}
+
 
 ULONG get_powerpc()
 {

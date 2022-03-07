@@ -104,9 +104,11 @@ STATIC ULONG stub_Reserved_ppc(ULONG *regarray)
 	return 0UL;
 }
 
+LONG IdExpansion(struct TagItem *Tags);
+
 STATIC ULONG stub_IdExpansion_ppc(ULONG *regarray)
 {
-	ULONG TagList = (ULONG) regarray[REG68K_A0/4];
+	regarray[REG68K_D0/4] = IdExpansion( (struct TagItem *) regarray[REG68K_A0/4]);
 	return (ULONG) regarray[REG68K_D0/4];
 }
 
