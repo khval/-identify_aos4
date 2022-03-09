@@ -38,6 +38,8 @@ Please do, ask for access to this repo.
 
 Need translations, tools or improvements, however let Richard "Shred" Koerber to define the standard for now.
 
+https://github.com/shred/identify/issues
+
 Best Regards
 
 Kjetil Hvalstrand
