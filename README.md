@@ -16,10 +16,10 @@ I also hope to reuse what ever I can, but put as little as possible into this re
 
 # limitations
 
-No support for IdAlert and IdFunction, just because I don’t see major value, but if someone want add support or this, please go right ahead.
-There are some benchmarking stuff not supported. (will need to find a why to compile inn some 68k binary, and use hunk realloc code.)
+value, but if someone wants to add support for this, please go right ahead.
+There are some benchmarking stuff, not supported. (Will need to find a way to compile inn some 68k binary, and use hunk realloc code.)
 I focused on AmigaONE and Sam’s, so it will report wrong info on Blizzard PPC (A1200) and Cyberstorm PPC (A4000), feel free to fix it.
-or use the MC680x0 version, should work on Classic Amiga systems.
+Or use the MC680x0 version, should work on Classic Amiga systems.
 
 # different
 
@@ -28,13 +28,15 @@ IdExpansion will not repport zorro cards on AmigaONE/Sam4x0 systems, insted it l
 # Bugs 
 
 Please repport any bugs, or discrepancy you find (not listed).
-While might not fix every issue, its useful to keep track of anything that needs to done.
+While might not fix every issue, its useful to keep track of anything that needs to be done.
 
 https://github.com/khval/identify_aos4/issues
 
 # Contribute
 
 Please do, ask for access to this repo. 
+
+Need translations, tools or improvements, however let Richard "Shred" Koerber to define the standard for now.
 
 Best Regards
 Kjetil Hvalstrand
