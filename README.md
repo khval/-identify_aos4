@@ -2,6 +2,9 @@
 
 This is a replica project aimed at duplication same set of features as the AmigaOS3.x M68K version of this library (written by Richard "Shred" Koerber).
 
+M680x0 version can be found here:
+https://github.com/shred/identify
+
 The big difference is that this is a PowerPC library and its written in C, the AmigaOS 3.x m68k version is written in old school assembler.
 this is why I can't cooperate much to the original library. But I hope we can agree on some things like ID numbers and so on.
 I also hope to reuse what ever I can, but put as little as possible into this repo. (too not duplicate work, unnecessary.)
@@ -35,6 +38,8 @@ https://github.com/khval/identify_aos4/issues
 # Contribute
 
 Please do, ask for access to this repo. 
+
+https://github.com/khval/identify_aos4
 
 Need translations, tools or improvements, however let Richard "Shred" Koerber to define the standard for now.
 
