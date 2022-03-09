@@ -1,0 +1,11 @@
+
+echo "echo *"*E[1mread from *"Identify.ct*"*E[0m" > t:b2-flexcat
+echo "flexcat Identify.cd Identify.ct codeset=0 catalog=Identify.catalog" >> t:b2-flexcat
+
+echo > t:Identify-flexcat
+
+list catalogs all lformat "echo *E[1mread from *"%p%n*"*E[0m*nflexcat Identify.cd *"%p%n*" catalog=%pIdentify.catalog" | grep "Identify.ct" >> t:Identify-flexcat
+
+
+protect t:Identify-flexcat +s
+t:Identify-flexcat 

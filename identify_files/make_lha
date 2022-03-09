@@ -2,33 +2,47 @@
 .bra {
 .ket }
 
-setenv lhafile=ram:libblitter_library.lha
+setenv lhafile=ram:identify_library.lha
 
-if exists ram:libblitter_library
-	delete ram:libblitter_library all
+if exists ram:identify_library
+	delete ram:identify_library all
 endif
 
-if exists ram:libblitter_library.lha
-	delete ram:libblitter_library.lha
+if exists ram:identify_library.lha
+	delete ram:identify_library.lha
 endif
 
-makedir ram:libblitter_library
-makedir ram:libblitter_library/libs
-makedir ram:libblitter_library/Include
-makedir ram:libblitter_library/Include/include_h/
-makedir ram:libblitter_library/lvo
+makedir ram:identify_library
+makedir ram:identify_library/c
+makedir ram:identify_library/libs
+makedir ram:identify_library/locale
+makedir ram:identify_library/locale/Catalogs
+makedir ram:identify_library/development_ppc
+makedir ram:identify_library/development_ppc/Include
+makedir ram:identify_library/development_ppc/Include/include_h/
 
-copy /package ram:libblitter_library all
-copy /readme.txt ram:libblitter_library/readme.txt
-copy /include/#? ram:libblitter_library/Include/include_h/ all
+copy c:ListExp ram:identify_library/c
+copy c:InstallIfy ram:identify_library/c
+copy libs:rexxidentify.library ram:identify_library/libs
 
-IF EXISTS libblitter.library
-	copy libblitter.library ram:libblitter_library/libs
+copy /package ram:identify_library all
+copy /development_m68k ram:identify_library/development_m68k all
+copy /readme.txt ram:identify_library/readme.txt
+copy /include/#? ram:identify_library/development_ppc/Include/include_h/ all
+
+IF EXISTS identify.library
+	copy identify.library ram:identify_library/libs
 else
-	echo libblitter.library not found
+	echo identify.library not found
 endif
 
-lha -er a $lhafile ram:libblitter_library >NIL:
-lha L $lhafile
-;delete ram:libblitter_library all 
+lha -er a $lhafile ram:identify_library >NIL:
+; lha L $lhafile
+;delete ram:identify_library all 
 
+cd /locale/
+list  catalogs/ LFORMAT "makedir ram:identify_library/locale/%p%n" > t:copy_catalogs
+list  all LFORMAT "copy /locale/%p%n ram:identify_library/locale/%p " | grep identify.catalog >> t:copy_catalogs
+cd /identify_files/
+protect t:copy_catalogs +s
+t:copy_catalogs

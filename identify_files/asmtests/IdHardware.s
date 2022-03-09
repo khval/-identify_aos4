@@ -2,8 +2,8 @@
 	include "lvo/exec_lib.i"
 	include "lvo/dos_lib.i"
 
-	include "//reference/identify_lib.i"
-	include "//reference/libraries/identify.i"
+	include "//development_m68k/lvo/identify_lib.i"
+	include "//development_m68k/libraries/identify.i"
 
 	SECTION main,CODE
 
