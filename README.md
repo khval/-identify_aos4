@@ -16,7 +16,7 @@ I also hope to reuse what ever I can, but put as little as possible into this re
 
 # Limitations
 
-value, but if someone wants to add support for this, please go right ahead.
+No support for IdAlert and IdFunction, just because I don’t see a major value, but if someone wants to add support for this, please go right ahead.
 There are some benchmarking stuff, not supported. (Will need to find a way to compile inn some 68k binary, and use hunk realloc code.)
 I focused on AmigaONE and Sam’s, so it will report wrong info on Blizzard PPC (A1200) and Cyberstorm PPC (A4000), feel free to fix it.
 Or use the MC680x0 version, should work on Classic Amiga systems.
