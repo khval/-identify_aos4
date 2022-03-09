@@ -9,7 +9,7 @@ I also hope to reuse what ever I can, but put as little as possible into this re
 # Why?
 
 * Because its most safe why to query the system without poking the hardware.
-* Because it’s useful to have common and standard API’s. 
+* Because it’s useful to have common standard API’s.
 * Because programs will not work without it.
 * Because having a native version will allow people to use it in C programs.
 * Becouse the 680x0 version crashes on AmigaONE and Sam440/460 systems.
